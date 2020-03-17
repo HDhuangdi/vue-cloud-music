@@ -40,7 +40,7 @@ div.song-card{
                 font-size: 16px;
             }
             p.split,p.artists{
-                font-size: 12px;
+                font-size: 13px;
                 color:$font-introduce;
                 line-height: 16px;
                 font-weight: lighter;

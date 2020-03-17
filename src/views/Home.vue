@@ -47,14 +47,7 @@
           </div>
           <ul class="list">
             <li class="songList" v-for="item,i of reommendList" :key="i">
-              <div>
-                <span
-                  class="iconfont icon-bofangsanjiaoxing"
-                  v-text="parseInt(item.playCount/10000)+'万'"
-                ></span>
-              </div>
-              <img :src="item.picUrl+'?param=200y200'" />
-              <p v-text="item.name"></p>
+              <songlist-info :item="item"></songlist-info>
             </li>
           </ul>
         </div>
@@ -75,6 +68,65 @@
             </li>
           </ul>
         </div>
+        <!-- 热歌风向标 -->
+        <div class="rank">
+          <p>排行榜</p>
+          <div class="title">
+            <h3>热歌风向标</h3>
+            <router-link to="/">查看更多</router-link>
+          </div>
+          <ul class="list">
+            <li class="list-item">
+              <ul class="col">
+                <li class="col-item"><p>云音乐飙升榜</p></li>
+                <li class="col-item" v-for="item,i of ranklist_1" :key="i">
+                  <img :src="item.al.picUrl+'?param=100y100'">
+                  <p class="count" v-text="i+1"></p>
+                  <p class="sname" v-text="item.name"></p>
+                  <p class="split"> - </p>
+                  <p class="artists" v-text="item.ar[0].name"></p>
+                </li>
+              </ul>
+            </li>
+            <li class="list-item">
+              <ul class="col">
+                <li class="col-item"><p>云音乐新歌榜</p></li>
+                <li class="col-item" v-for="item,i of ranklist_2" :key="i">
+                  <img :src="item.al.picUrl+'?param=100y100'">
+                  <p class="count" v-text="i+1"></p>
+                  <p class="sname" v-text="item.name"></p>
+                  <p class="split"> - </p>
+                  <p class="artists" v-text="item.ar[0].name"></p>
+                </li>
+              </ul>
+            </li>
+            <li class="list-item">
+              <ul class="col">
+                <li class="col-item"><p>云音乐热歌榜</p></li>
+                <li class="col-item" v-for="item,i of ranklist_3" :key="i">
+                  <img :src="item.al.picUrl+'?param=100y100'">
+                  <p class="count" v-text="i+1"></p>
+                  <p class="sname" v-text="item.name"></p>
+                  <p class="split"> - </p>
+                  <p class="artists" v-text="item.ar[0].name"></p>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <!-- 电台推荐 -->
+        <div class="fm-recommend">
+          <p>电台推荐</p>
+          <div class="title">
+            <h3>我用此声伴你心</h3>
+            <router-link to="/">查看更多</router-link>
+          </div>
+          <ul class="list">
+            <li class="fmList" v-for="item,i of reommendFMs" :key="i">
+              <fmlist-info :item="item"></fmlist-info>
+            </li>
+          </ul>
+        </div>
       </div>
     </van-tab>
     <van-tab title="排行">排行</van-tab>
@@ -85,16 +137,24 @@
 import {
   getBanner,
   getReommendList,
-  getReommendSongs
+  getReommendSongs,
+  getRankList,
+  getReommendFM
 } from "../assets/js/APIs/home";
 import songCard from "../components/SongCard";
+import songlistInfo from "../components/SongListInfo";
+import fmlistInfo from "../components/FMListInfo";
 export default {
   data() {
     return {
       active: 0,
       images: [],
       reommendList: [],
-      reommendSongs: []
+      reommendSongs: [],
+      reommendFMs: [],
+      ranklist_1:[],
+      ranklist_2:[],
+      ranklist_3:[],
     };
   },
   mounted() {
@@ -102,21 +162,39 @@ export default {
       for (var banner of result.banners) {
         this.images.push(banner.pic);
       }
-    }),
+    });
     getReommendList().then(result => {
       this.reommendList = result.result;
-    }),
+    });
     getReommendSongs().then(result => {
       var arr = result.result;
       var length = arr.length
       for (var i = 0; i < Math.ceil(length / 3); i++) {
         this.reommendSongs[i] = arr.splice(0,3)
       }
-      console.log(this.reommendSongs)
       this.$forceUpdate();
     });
+    //云音乐飙升榜
+    getRankList(3).then(result=>{
+      result.splice(3)
+      this.ranklist_1 = result
+    });
+    //云音乐新歌榜
+    getRankList(0).then(result=>{
+      result.splice(3)
+      this.ranklist_2 = result
+    });
+    //云音乐热歌榜
+    getRankList(1).then(result=>{
+      result.splice(3)
+      this.ranklist_3 = result
+    });
+    getReommendFM().then(result=>{
+      this.reommendFMs = result.result
+      console.log(this.reommendFMs)
+    })
   },
-  components: { songCard }
+  components: { songCard,songlistInfo,fmlistInfo }
 };
 </script>
 <style lang="scss" scoped>
@@ -155,7 +233,7 @@ export default {
 }
 .content > * {
   padding: 0 15px;
-  margin-top: 20px;
+  margin-top: 30px;
 }
 .content {
   margin-bottom: 55px;
@@ -195,40 +273,12 @@ export default {
       display: flex;
       li.songList {
         &:not(:first-child) {
-          margin-left: 10px;
+            margin-left: 10px;
         }
         position: relative;
         width: 100px;
         height: 100px;
         flex-shrink: 0;
-        div {
-          display: block;
-          width: 100%;
-          position: absolute;
-          top: 5px;
-          z-index: 10;
-          color: white;
-          span {
-            font-size: 12px;
-            font-weight: lighter;
-            float: right;
-            margin-right: 5px;
-          }
-        }
-        img {
-          width: 100%;
-          border-radius: 10px;
-        }
-        p {
-          display: -webkit-box;
-          -webkit-box-orient: vertical;
-          -webkit-line-clamp: 2;
-          overflow: hidden;
-          max-height: 30px;
-          margin-top: 5px;
-          line-height: 15px;
-          color: $font-main;
-        }
       }
     }
   }
@@ -256,6 +306,111 @@ export default {
             }
           }
         }
+      }
+    }
+  }
+  div.rank{
+     @include title;
+     ul.list {
+      &::-webkit-scrollbar {
+        display: none;
+      }
+      width: 100%;
+      height: 230px;
+      margin-top: 10px;
+      overflow-x: scroll;
+      display: flex;
+      li.list-item:not(:first-child){
+        margin-left: 20px;
+      }
+      li.list-item{
+        flex-shrink: 0;
+        width: 80%;
+        background: #f8f8f8;
+        padding: 0px 10px;
+        ul.col{
+          width: 100%;
+          border-radius: 5px;
+          
+          li.col-item{
+            margin-left: 0;
+          }
+          li.col-item:first-child{
+            p{
+              color: $font-main;
+              font-weight: bold;
+              font-size: 16px;
+              padding: 15px 0;
+            }
+          }
+          li.col-item:not(:first-child){
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+            img{
+              width: 18%;
+              border-radius: 10px;
+            }
+            p{
+              margin-top: 0;
+              margin-bottom: 0;
+            }
+            p.count{
+              color:$font-main;
+              font-weight: bold;
+              font-size: 14px;
+              margin: 0 15px;
+            }
+            p.sname{
+              width: 120px;
+              color:$font-main;
+              font-size: 16px;
+              overflow: hidden;
+              text-overflow:ellipsis;
+              white-space: nowrap;
+            }
+            p.split,p.artists{
+              margin: 0 5px;
+              font-size: 13px;
+              color:$font-introduce;
+              line-height: 16px;
+              font-weight: lighter;
+            }
+            p.artists{
+              width: 48px;
+              overflow: hidden;
+              text-overflow:ellipsis;
+              white-space: nowrap;
+            }
+            p.change{
+              font-size: 14px;
+              color: red;
+              margin-left: 10px;
+            }
+          }
+        }
+      }
+    }
+  }
+  div.fm-recommend{
+    @include title;
+    ul.list {
+      padding-left: 5px;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+      width: 100%;
+      margin-top: 10px;
+      overflow-x: scroll;
+      overflow-y: visible;
+      display: flex;
+      li.fmList {
+        &:not(:first-child) {
+            margin-left: 10px;
+        }
+        position: relative;
+        width: 100px;
+        flex-shrink: 0;
       }
     }
   }

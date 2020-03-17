@@ -34,8 +34,29 @@ function getReommendSongs(){
         }).then(result=>resolve(result.data))
     })
 }
+function getRankList(idx){
+    return new Promise(resolve=>{
+        axios.get(baseURL+"/top/list",{
+            params:{
+                idx,
+                withCredentials: true
+            }
+        }).then(result=>resolve(result.data.playlist.tracks))
+    })
+}
+function getReommendFM(){
+    return new Promise(resolve=>{
+        axios.get(baseURL+"/personalized/djprogram",{
+            params:{
+                withCredentials: true
+            }
+        }).then(result=>resolve(result.data))
+    })
+}
 export {
     getBanner,
     getReommendList,
-    getReommendSongs
+    getReommendSongs,
+    getRankList,
+    getReommendFM
 }
