@@ -1,0 +1,7 @@
+@font-face{
+    font-family: 'PingFang'; 
+    src:url('../../public/fonts/PingFang.ttf') format('truetype'),   
+}
+html{
+    font-family: 'PingFang';
+}

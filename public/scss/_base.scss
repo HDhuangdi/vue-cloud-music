@@ -1,0 +1,42 @@
+
+$cm-red:#d44439;
+$head-color:#e4e4e4;
+$font-introduce:#cbcbcb;
+$font-main:#3f3f41;
+a{
+    display: block;
+}
+@mixin iconBg{
+    background-image: linear-gradient(to right, #fe5244,#fe2116);
+}
+@mixin flex-around{
+    display: flex;
+    justify-content: space-around;
+}
+@mixin flex-between{
+    display: flex;
+    justify-content: space-between;
+}
+@mixin title{
+    p{
+        margin-bottom:5px;
+        font-size: 12px;
+        color: $font-introduce;
+    }
+    div.title{
+        @include flex-between;
+        align-items: center;
+        h3{
+          color: $font-main;
+          font-weight: bold;
+        }
+        a{
+          display: inline;
+          padding:5px 8px;
+          font-size: 12px;
+          color: $font-main;
+          border: 1px solid $font-introduce;
+          border-radius: 15px;
+        }
+    }
+}

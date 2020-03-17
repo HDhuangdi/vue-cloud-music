@@ -1,32 +1,24 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
+    <my-header></my-header>
+    <keep-alive>
+      <!-- 需要缓存的视图组件 -->
+      <router-view v-if="$route.meta.keepAlive"></router-view>
+    </keep-alive>
+    <!-- 不需要缓存的视图组件 -->
+    <router-view v-if="!$route.meta.keepAlive"></router-view>
+    <!-- 标签栏 -->
+    <van-tabbar route fixed safe-area-inset-bottom active-color="#d44439">
+      <van-tabbar-item replace to="/" icon="wap-home-o">
+        发现
+      </van-tabbar-item>
+      <van-tabbar-item replace to="/mymusic" icon="music-o">
+        我的
+      </van-tabbar-item>
+      <van-tabbar-item replace to="/me" icon="friends-o">
+        账号
+      </van-tabbar-item>
+    </van-tabbar>
   </div>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
-}
-</style>
