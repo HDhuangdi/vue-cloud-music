@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <my-header></my-header>
     <keep-alive>
       <!-- 需要缓存的视图组件 -->
       <router-view v-if="$route.meta.keepAlive"></router-view>
@@ -8,17 +7,115 @@
     <!-- 不需要缓存的视图组件 -->
     <router-view v-if="!$route.meta.keepAlive"></router-view>
     <!-- 标签栏 -->
-    <van-tabbar route fixed safe-area-inset-bottom active-color="#d44439">
-      <van-tabbar-item replace to="/" icon="wap-home-o">
-        发现
-      </van-tabbar-item>
-      <van-tabbar-item replace to="/mymusic" icon="music-o">
-        我的
-      </van-tabbar-item>
-      <van-tabbar-item replace to="/me" icon="friends-o">
-        账号
-      </van-tabbar-item>
-    </van-tabbar>
+    <my-footer></my-footer>
+    <audio
+      autoplay="autoplay"
+      ref="audio"
+      :src="url"
+      id="audio"
+      v-on:canplaythrough="canPlay"
+      v-on:ended="end"
+      v-on:timeupdate="progress"
+    ></audio>
   </div>
 </template>
-
+<script>
+export default {
+  data() {
+    return {
+      audio: null,
+      duration: 0,
+      durationFmt:0,
+      current:0,
+      currentFmt:0,
+    };
+  },
+  methods: {
+    canPlay() {
+      this.audio = document.getElementById("audio");
+      this.duration = audio.duration;
+      this.$store.commit("changePlay", true);
+      this.$store.commit("getDuration", this.duration);
+      this.durationFmt = this.timeFormat(this.duration)
+      this.$store.commit("getDurationFmt", this.durationFmt);
+      this.$store.commit("changeCanplay", true);
+    },
+    end() {
+      //音乐结束事件触发后，修改vuex中isPlay变量为false
+      this.$store.commit("changePlay", false);
+    },
+    progress() {
+      this.current = this.audio.currentTime;
+      this.currentFmt = this.timeFormat(this.current)
+      this.$store.commit("getCurrent", this.current);
+      this.$store.commit("getCurrentFmt", this.currentFmt);
+    },
+    timeFormat(time) {
+      var m, s;
+      time = parseInt(time);
+      m = Math.floor(time / 60);
+      s = time % 60;
+      if (m < 10) {
+        m = `0${m}`;
+      }
+      if (s < 10) {
+        s = `0${s}`;
+      }
+      return `${m}:${s}`;
+    }
+  },
+  computed: {
+    url() {
+      return this.$store.state.url;
+    },
+    isPlay() {
+      return this.$store.state.isPlay;
+    },
+    current_1(){
+      return this.$store.state.current_1;
+    },
+    flag(){
+      return this.$store.state.flag;
+    },
+    isPayed(){
+      return this.$store.state.isPayed;
+    }
+  },
+  watch: {
+    isPayed(){
+      if(!this.isPayed){
+        this.$store.commit("changePlay",false)
+      }else{
+        this.$store.commit("changePlay",true)
+      }
+    },
+    isPlay() {
+      if (this.isPlay) {
+        this.audio.play();
+      } else {
+        this.audio.pause();
+      }
+    },
+    current_1(){
+      this.current = this.current_1;
+      this.audio.currentTime = this.current
+    },
+    "$route": {
+      handler(to,from){
+        this.$nextTick(()=>{
+            this.flag && this.init && this.init();
+        })
+      }
+    },
+    deep: true
+  },
+  activated(){
+    this.$store.commit("changeFlag", true);
+  },
+  deactivated(){
+    this.$store.commit("changeFlag", false);
+  }
+};
+</script>
+<style lang="scss" scoped>
+</style>

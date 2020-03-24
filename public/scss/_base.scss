@@ -1,13 +1,15 @@
-
 $cm-red:#d44439;
 $head-color:#e4e4e4;
 $font-introduce:#cbcbcb;
 $font-main:#3f3f41;
+$font-title:#161618;
+$font-alpha-white:rgba($color: #ffffff, $alpha: .8);
+$font-alpha-grey:rgba($color: #d3d3d3, $alpha: .8);
 a{
     display: block;
 }
 @mixin iconBg{
-    background-image: linear-gradient(to right, #fe5244,#fe2116);
+    background: linear-gradient(to right, #fe5244,#fe2116);
 }
 @mixin flex-around{
     display: flex;
@@ -19,24 +21,25 @@ a{
 }
 @mixin title{
     p{
-        margin-bottom:5px;
-        font-size: 12px;
+        margin-bottom:.05rem;
+        font-size: .12rem;
         color: $font-introduce;
     }
     div.title{
         @include flex-between;
         align-items: center;
         h3{
-          color: $font-main;
-          font-weight: bold;
+            font-size: .18rem;
+            color: $font-main;
+            font-weight: bold;
         }
         a{
           display: inline;
-          padding:5px 8px;
-          font-size: 12px;
+          padding:.05rem .08rem;
+          font-size: .12rem;
           color: $font-main;
-          border: 1px solid $font-introduce;
-          border-radius: 15px;
+          border: .01rem solid $font-introduce;
+          border-radius: .15rem;
         }
     }
 }

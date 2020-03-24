@@ -23,31 +23,31 @@ div.song-card{
     @include flex-between;
     img{
         width: 18%;
-        border-radius: 10px;
+        border-radius: .10rem;
     }
     div.content{
         @include flex-around;
         flex-direction: column;
         width: 75%;
-        padding: 5px 0 5px 10px;
+        padding: .05rem 0 .05rem .1rem;
         div.header{
             display: flex;
             & p:not(:first-child){
-                margin-left: 5px;
+                margin-left: .05rem;
             }
             p.songName{
                 color:$font-main;
-                font-size: 16px;
+                font-size: .16rem;
             }
             p.split,p.artists{
-                font-size: 13px;
+                font-size: .13rem;
                 color:$font-introduce;
-                line-height: 16px;
+                line-height: .16rem;
                 font-weight: lighter;
             }
         }
         p.intro{
-            font-size: 12px;
+            font-size: .12rem;
             color:$font-introduce;
             font-weight: lighter;
         }

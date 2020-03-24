@@ -14,40 +14,42 @@ export default {
 <style lang="scss" scoped>
 @import "../../public/scss/base.scss";
     .info-item {
-        font-size: 12px;
-        letter-spacing: 1.5px;
+        font-size: .12rem;
         position: relative;
         span {
             position: absolute;
-            top:74px;
-            left:74px;
+            top:.74rem;
+            left:.74rem;
             z-index: 10;
             color: white;
-            font-size: 22px;
+            font-size: .22rem;
             font-weight: lighter;
             float: right;
-            margin-right: 5px;
+            margin-right: .05rem;
         }
         img {
             width: 100%;
-            border-radius: 10px;
+            border-radius: .1rem;
         }
         p.fname {
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
-            max-height: 30px;
-            margin-top: 5px;
-            line-height: 15px;
+            max-height: .3rem;
+            margin-top: .05rem;
+            line-height: .15rem;
             color: $font-main;
-            font-size: 13px;
-
+            font-size: .12rem;
         }
         p.des{
-            font-size: 12px;
+            font-size: .12rem;
             font-weight: lighter;
             color:$font-introduce;
-            margin-top: 5px;
+            margin-top: .05rem;
+            display:-webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            overflow: hidden;
         }
     }
 </style>
