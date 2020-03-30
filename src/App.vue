@@ -7,7 +7,6 @@
     <!-- 不需要缓存的视图组件 -->
     <router-view v-if="!$route.meta.keepAlive"></router-view>
     <!-- 标签栏 -->
-    <my-footer></my-footer>
     <audio
       autoplay="autoplay"
       ref="audio"
@@ -34,11 +33,12 @@ export default {
     canPlay() {
       this.audio = document.getElementById("audio");
       this.duration = audio.duration;
-      this.$store.commit("changePlay", true);
       this.$store.commit("getDuration", this.duration);
       this.durationFmt = this.timeFormat(this.duration)
       this.$store.commit("getDurationFmt", this.durationFmt);
       this.$store.commit("changeCanplay", true);
+      this.$store.commit("changePlay", true);
+      this.audio.play()
     },
     end() {
       //音乐结束事件触发后，修改vuex中isPlay变量为false
@@ -64,6 +64,27 @@ export default {
       return `${m}:${s}`;
     }
   },
+  mounted(){
+   // 阻止双击放大
+    var lastTouchEnd = 0;
+    document.addEventListener('touchstart', function(event) {
+        if (event.touches.length > 1) {
+            event.preventDefault();
+        }
+    });
+    document.addEventListener('touchend', function(event) {
+        var now = (new Date()).getTime();
+        if (now - lastTouchEnd <= 300) {
+            event.preventDefault();
+        }
+        lastTouchEnd = now;
+    }, false);
+ 
+    // 阻止双指放大
+    document.addEventListener('gesturestart', function(event) {
+        event.preventDefault();
+    });
+  },
   computed: {
     url() {
       return this.$store.state.url;
@@ -82,6 +103,12 @@ export default {
     }
   },
   watch: {
+    //切换歌曲时，调整可播放状态为false，当前播放时间为0
+    url(){
+      this.$store.commit('changeCanplay',false)
+      this.$store.commit('getCurrent',0)
+    },
+    //当付费条件变化后，调整播放状态
     isPayed(){
       if(!this.isPayed){
         this.$store.commit("changePlay",false)
@@ -96,10 +123,12 @@ export default {
         this.audio.pause();
       }
     },
+    //根据用户的拖动的小圆点位置来制定播放时间
     current_1(){
       this.current = this.current_1;
       this.audio.currentTime = this.current
     },
+    //keepalive，跳转路由时，关闭wathch
     "$route": {
       handler(to,from){
         this.$nextTick(()=>{
@@ -118,4 +147,8 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+#app{
+  height: 100%;
+  width: 100%;
+}
 </style>

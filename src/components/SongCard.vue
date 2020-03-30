@@ -1,6 +1,6 @@
 <template>
     <div class="song-card">
-        <img :src="img+'?param=100y100'">
+        <img :src="img">
         <div class="content">
             <div class="header">
                 <p class="songName" v-text="name"></p>
@@ -23,6 +23,7 @@ div.song-card{
     @include flex-between;
     img{
         width: 18%;
+        height: 100%;
         border-radius: .10rem;
     }
     div.content{

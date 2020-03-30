@@ -6,8 +6,13 @@ html{
     font-family: 'PingFang';
     font-size: 100px;
 }
+html,body{
+    height: 100%;
+    width: 100%;
+}
 *{
     box-sizing: border-box;
+    -webkit-appearance: none;
 }
 @keyframes turn{
     0%{-webkit-transform:rotate(0deg);}

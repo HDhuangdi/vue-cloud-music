@@ -1,4 +1,5 @@
 .DS_Store
+pics
 node_modules
 /dist
 

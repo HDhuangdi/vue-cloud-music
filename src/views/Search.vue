@@ -16,6 +16,7 @@
         </router-link>
       </ul>
     </div>
+    <my-footer></my-footer>
   </div>
 </template>
 <script>

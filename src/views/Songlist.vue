@@ -65,6 +65,7 @@
                 </div>
             </ul>
         </div>
+        <my-footer></my-footer>
     </div>
 </template>
 <script>
@@ -74,7 +75,7 @@ import {
 export default {
     data(){
         return{
-            id:this.$route.params.id,
+            listID:this.$route.params.listID,
             info:{creator:{}},
             songs:[],
             subscribedCount:0,
@@ -86,7 +87,7 @@ export default {
         }
     },
     created(){
-        getList(this.id).then(result=>{
+        getList(this.listID).then(result=>{
             this.info = result.playlist;
             this.songs = result.playlist.tracks;
             this.subscribedCount = parseInt(this.info.subscribedCount)>10000?(this.info.subscribedCount/10000).toFixed(1) + '万':parseInt(this.info.subscribedCount)

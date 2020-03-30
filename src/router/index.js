@@ -14,7 +14,7 @@ const routes = [
     }
   },
   {
-    path: '/play/:id',
+    path: '/play/:songID',
     name: 'Play',
     props:true,
     meta:{
@@ -23,7 +23,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "play" */ '../views/Play.vue')
   },
   {
-    path: '/songlist/:id',
+    path: '/songlist/:listID',
     name: 'Songlist',
     props:true,
     component: () => import(/* webpackChunkName: "songlist" */ '../views/Songlist.vue')
@@ -39,9 +39,25 @@ const routes = [
     component: () => import(/* webpackChunkName: "me" */ '../views/Me.vue')
   },
   {
-    path: '/signin',
-    name: 'Signin',
-    component: () => import(/* webpackChunkName: "signin" */ '../views/SignIn.vue')
+    path: '/welcome',
+    name: 'Welcome',
+    component: () => import(/* webpackChunkName: "welcome" */ '../views/Welcome.vue')
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import(/* webpackChunkName: "login" */ '../views/Login.vue')
+  },
+  {
+    path: '/register_phone',
+    name: 'Register_phone',
+    component: () => import(/* webpackChunkName: "register" */ '../views/Register_phone.vue')
+  },
+  {
+    path: '/register_msg/:phone',
+    name: 'Register_msg',
+    props:true,
+    component: () => import(/* webpackChunkName: "register" */ '../views/Register_msg.vue')
   },
   {
     path: '/search/:keywords',

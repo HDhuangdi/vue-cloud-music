@@ -4,8 +4,8 @@
         <div class="header">
             <span @click="back" class="iconfont icon-guanbi"></span>
             <div>
-                <pre class="sname" v-text="info.name">Beat It</pre>
-                <pre class="artist" v-text="info.ar[0].name">Michael Jackson</pre>
+                <pre class="sname" v-text="info.name"></pre>
+                <pre class="artist" v-text="info.ar[0].name"></pre>
             </div>
             <span class="iconfont icon-icon-"></span>
         </div>
@@ -20,9 +20,10 @@
             <span class="iconfont icon-gengduo"></span>
         </div>
         <div class="info">
-            <span class="current" v-text="currentFmt"></span>
+            <span class="current" v-text="currentFmt" v-show="canPlay"></span>
+            <van-loading type="spinner" size="16" v-show="!canPlay"/>
             <div class="progress">
-                <span class="icon" :style="{'margin-left':marginLeft}" v-on:touchmove="jump"></span>
+                <span class="icon" :style="{'left':left}" v-on:touchmove="jump"></span>
             </div>
             <span class="total" v-text="durationFmt"></span>
         </div>
@@ -43,18 +44,18 @@ import { Dialog } from 'vant';
 export default {
     data(){
         return{
-            id:0,
+            songID:0,
             url:null,
             info:{al:{},ar:[{}]},
-            marginLeft:0,
+            left:0,
             totalWidth:0,
         }
     },
     methods:{
         init(){
-            this.id = this.$route.params.id
-            this.$store.commit('getId',this.id)
-            getURL(this.id).then(result=>{
+            this.songID = this.$route.params.songID
+            this.$store.commit('getsongID',this.songID)
+            getURL(this.songID).then(result=>{
                 //付费歌曲判断
                 if(result.data[0].code == -110 && result.data[0].payed == 0){
                     Dialog.alert({
@@ -67,7 +68,7 @@ export default {
                 this.url = result.data[0].url
                 this.$store.commit("getUrl",this.url)
             })
-            getInfo(this.id).then(result=>{
+            getInfo(this.songID).then(result=>{
                 this.info = result.songs[0]
                 this.$store.commit("getInfo",this.info)
             })
@@ -97,9 +98,6 @@ export default {
             }
             return `${m}:${s}`
         },
-        progress(){
-            this.currentFmt = this.timeFormat(this.current)
-        },
         jump(e){
             //获取进度条距离窗口左边的距离
             var box = document.getElementsByClassName("progress")[0]; 
@@ -107,16 +105,14 @@ export default {
             var pos = box.getBoundingClientRect(); 
             var x = pos.left
             if (event.targetTouches.length == 1) {
-                //触发触摸move事件后，暂停音乐播放
                 var touch = event.targetTouches[0];
-                // this.$store.commit("changePlay",false)
-                //小圆点的marginLeft边界条件判断
+                //小圆点的mleft边界条件判断
                 if(touch.pageX - x < 0){
-                    this.marginLeft = 0
+                    this.left = 0
                 }else if(touch.pageX - x > this.totalWidth){
-                    this.marginLeft = (this.totalWidth/100)+'rem'
+                    this.left = (this.totalWidth/100)+'rem'
                 }else{
-                    this.marginLeft = (touch.pageX - x)/100 + 'rem'
+                    this.left = (touch.pageX - x)/100 + 'rem'
                 }
                 //计算音乐的此时播放时间 = （( 触摸点距离页面左边的距离 - 进度条距离页面左边的距离 )/ 进度条的宽度 )* 总时长
                 this.$store.commit("getCurrent_1",((touch.pageX - x)/this.totalWidth)*this.duration)
@@ -147,6 +143,9 @@ export default {
         },
         flag(){
             return this.$store.state.flag
+        },
+        canPlay(){
+            return this.$store.state.canPlay
         }
     },
     watch:{
@@ -158,7 +157,7 @@ export default {
                 //获得进度条的宽度
                 this.totalWidth = document.getElementsByClassName('progress')[0].offsetWidth
                 //小圆点的margin-left = totalWidth * distance
-                this.marginLeft = parseInt(this.totalWidth * distance)/100 + 'rem'
+                this.left = parseInt(this.totalWidth * distance)/100 + 'rem'
             }
         },
     },
@@ -176,17 +175,20 @@ export default {
 <style lang="scss" scoped>
 @import "../../public/scss/base.scss";
     div.play{
-        height: 6.67rem;
+        height: 100%;
         overflow: hidden;
         position: relative;
-        background: #000;
+        background: rgb(29, 29, 29);
         img.bg{
             position: absolute;
+            width: 300%;
+            height: 300%;
             left: 50%;
             top: 50%;
-            transform: translate(-50%,-50%) scale(2.4);
+            transform: translate(-50%,-50%);
+            z-index: 1;
             filter: blur(.24rem);
-            opacity: .5;
+            opacity: .2;
         }
         div.pic{
             position: absolute;

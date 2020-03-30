@@ -4,11 +4,12 @@
             <div class="control" v-on:touchstart="change">
                 <label class="iconfont icon-sousuo" :class="active?'active':''" for="search"></label>
                 <label class="text" for="search" :class="active?'active':''">搜索</label>
-                <input type="text" id="search" :class="active?'active':''" @keydown.13="search" v-model="keywords">
+                <input type="text" id="search" :class="active?'active':''" @keydown.enter="search" v-model="keywords">
                 <span class="cancel" :class="active?'active':''">取消</span>
             </div>
-            <router-link :to="`/play/${id}`" class="player">
-                <img :src="info.al.picUrl+'?param=50y50'" :class="isPlay?'':'paused'" v-if="canPlay">
+            <router-link :to="`/play/${songID}`" class="player" v-if="canPlay
+            ">
+                <img :src="info.al.picUrl+'?param=50y50'" :class="isPlay?'':'paused'">
             </router-link>
         </div>
     </div>
@@ -27,12 +28,17 @@ export default {
             if(e.target.className == 'cancel active'){
                 this.active = false
                 this.keywords = ""
+                this.keybordUp()
                 return
             }
             this.active = true
         },
-        search(){
+        keybordUp(){
+            document.getElementById('search').blur()
+        },
+        search(e){
             this.$router.push({name:'search',params:{keywords:this.keywords}})
+            this.keybordUp()
         } 
     },
     computed:{
@@ -42,11 +48,14 @@ export default {
         info(){
             return this.$store.state.info
         },
-        id(){
-            return this.$store.state.id
+        songID(){
+            return this.$store.state.songID
         },
         canPlay(){
             return this.$store.state.canPlay
+        },
+        url(){
+            return this.$store.state.url
         }
     }
 }
@@ -122,8 +131,8 @@ export default {
                 position: absolute;
                 left: 3.35rem;
                 display: block;
-                width: 30px;
-                height: 30px;
+                width: .3rem;
+                height: .3rem;
                 font-size: 0;
                 float: right;
                 img{

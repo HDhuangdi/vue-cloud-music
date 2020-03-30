@@ -68,7 +68,7 @@
                       :name="elem.song.name"
                       :artists="elem.song.artists[0].name"
                       :intr="elem.song.album.company"
-                      :img="elem.picUrl"
+                      :img="elem.picUrl+'?param=200y200'"
                     ></song-card>
                   </router-link>
                 </ul>
@@ -145,6 +145,7 @@
       <van-tab title="排行">排行</van-tab>
       <van-tab title="歌手">歌手</van-tab>
     </van-tabs>
+    <my-footer></my-footer>
   </div>
 </template>
 <script>
@@ -249,7 +250,7 @@ export default {
   margin-top: 0.3rem;
 }
 .content {
-  margin-bottom: 0.55rem;
+  margin-bottom: 1rem;
   ul.channels {
     @include flex-between;
     li {

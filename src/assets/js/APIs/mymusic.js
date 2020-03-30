@@ -15,6 +15,18 @@ function getReommendList() {
 
 }
 
+function getLikeList(uid) {
+    return new Promise(resolve => {
+        axios.get(baseURL + '/user/playlist',{
+            params:{
+                uid,
+                withCredentials: true
+            }
+        }).then(result=>resolve(result.data))
+    })
+}
+
 export{
-    getReommendList
+    getReommendList,
+    getLikeList
 }

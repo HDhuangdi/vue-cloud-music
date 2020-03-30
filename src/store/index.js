@@ -1,63 +1,80 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import { getUserInfo } from "../assets/js/APIs/login";
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    id:0,
-    isLogin:false,
-    isPlay:false,
-    url:undefined,
-    info:null,
-    duration:0,
-    durationFmt:0,
-    current:0,
-    current_1:0,
-    currentFmt:0,
-    flag:false,
-    canPlay:false,
-    isPayed:true
+    songID:0,//歌曲id
+    isLogin:window.localStorage.isLogin?JSON.parse(window.localStorage.isLogin):false,//登录状态
+    profile:null,//用户信息
+    isPlay:false,//播放状态
+    url:undefined,//歌曲url
+    info:null,//歌曲信息
+    duration:0,//歌曲时长
+    durationFmt:0,//歌曲时长（格式化）
+    current:0,//当前播放时长
+    current_1:0,//触摸点所在的时长
+    currentFmt:"00:00",//当前播放时长（格式化）
+    flag:false,//watch的开关变量
+    canPlay:false,//可播放状态
+    isPayed:true,//付费状态
+    userInfo:null,
   },
   mutations: {
-    getId(state,id){
-      state.id = id
+    getsongID(state,value){
+      state.songID = value
     },
-    changePlay(state,bool){
-      state.isPlay = bool
+    changePlay(state,value){
+      state.isPlay = value
     },
-    getUrl(state,url){
-      state.url = url
+    getUrl(state,value){
+      state.url = value
     },
-    getInfo(state,info){
-      state.info = info
+    getInfo(state,value){
+      state.info = value
     },
-    getDuration(state,duration){
-      state.duration = duration
+    getDuration(state,value){
+      state.duration = value
     },
-    getDurationFmt(state,durationFmt){
-      state.durationFmt = durationFmt
+    getDurationFmt(state,value){
+      state.durationFmt = value
     },
-    getCurrent(state,current){
-      state.current = current
+    getCurrent(state,value){
+      state.current = value
     },
-    getCurrentFmt(state,currentFmt){
-      state.currentFmt = currentFmt
+    getCurrentFmt(state,value){
+      state.currentFmt = value
     },
-    getCurrent_1(state,current_1){
-      state.current_1 = current_1
+    getCurrent_1(state,value){
+      state.current_1 = value
     },
-    changeFlag(state,bool){
-      state.flag = bool
+    changeFlag(state,value){
+      state.flag = value
     },
-    changeCanplay(state,bool){
-      state.canPlay = bool
+    changeCanplay(state,value){
+      state.canPlay = value
     },
-    changeisPayed(state,bool){
-      state.isPayed = bool
+    changeisPayed(state,value){
+      state.isPayed = value
+    },
+    changeisLogin(state,value){
+      state.isLogin = value
+    },
+    getProfile(state,value){
+      state.profile = value
+    },
+    _getUserInfo(state,value){
+      state.userInfo = value
     }
   },
   actions: {
+    _getUserInfo(content,uid){
+      getUserInfo(uid).then(result=>{
+        content.commit('_getUserInfo',result)
+      })
+    }
   },
   modules: {
   }
